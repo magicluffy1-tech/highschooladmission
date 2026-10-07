@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>서산 고입 희망 현황</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{
+  --bg:#F2F5F7; --card:#FFFFFF; --ink:#18212B; --muted:#5B6773; --line:#D8DFE5;
+  --brand:#0E4D64; --brand-soft:#DDE9EE;
+  --open:#2A5FA8; --open-bg:#E4EDF8;
+  --safe:#1E7B4F; --safe-bg:#E1F2E9;
+  --edge:#8F5A12; --edge-bg:#F9ECD3;
+  --risk:#B3402A; --risk-bg:#F9E2DC;
+  --hard:#4F5B67; --hard-bg:#E6EAEE;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;line-height:1.6;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+header{padding:8px 0 16px}
+h1{font-size:26px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:14px}
+.meter{display:inline-flex;align-items:center;gap:8px}
+.meter i{display:block;width:96px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter b{display:block;height:100%;background:var(--brand)}
+[role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 18px}
+[role=tab]{font:inherit;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;margin-bottom:-1px}
+[role=tab][aria-selected=true]{color:var(--brand);border-bottom-color:var(--brand)}
+:focus-visible{outline:3px solid var(--open);outline-offset:2px}
+.panel[hidden]{display:none}
+.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px;font-size:14px;color:var(--muted)}
+select,textarea,button.act{font:inherit}
+select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.tablebox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:13px;font-weight:600;color:var(--muted);background:#F8FAFB}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+td.name{font-weight:600}
+td small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.cut{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px}
+.bar{position:relative;width:150px;height:10px;background:var(--hard-bg);border-radius:5px;margin-left:auto}
+.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--brand)}
+.bar span.over{background:var(--risk)}
+.bar em{position:absolute;left:66.67%;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600}
+.chip.open{color:var(--open);background:var(--open-bg)}
+.chip.safe{color:var(--safe);background:var(--safe-bg)}
+.chip.edge{color:var(--edge);background:var(--edge-bg)}
+.chip.risk{color:var(--risk);background:var(--risk-bg)}
+.chip.hard{color:var(--hard);background:var(--hard-bg)}
+.legend{font-size:13px;color:var(--muted);margin-top:10px}
+.legend em{display:inline-block;width:2px;height:12px;background:var(--ink);vertical-align:-2px;margin:0 4px}
+.form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.form label{display:block;font-weight:600;margin-bottom:6px}
+textarea{width:100%;min-height:120px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-top:12px}
+button.act{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 20px;font-weight:600;cursor:pointer}
+button.act:hover{background:#0A3A4C}
+.hint{font-size:13px;color:var(--muted);margin-top:6px}
+.err{color:var(--risk);font-size:14px;margin-top:8px}
+.student{margin-top:20px}
+.student h2{font-size:18px;margin:0 0 8px;display:flex;gap:12px;align-items:baseline}
+.student h2 span{font-weight:400;color:var(--muted);font-size:15px}
+tr.pick td{background:#FFF9E8}
+td.diff.pos{color:var(--safe)} td.diff.neg{color:var(--risk)}
+.foot{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:600px){h1{font-size:22px}.wrap{padding:14px 10px 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>서산 고입 희망 현황</h1>
+    <div class="meta" id="meta">불러오는 중…</div>
+  </header>
+
+  <div role="tablist" aria-label="화면 선택">
+    <button role="tab" id="tab-dash" aria-selected="true" aria-controls="p-dash">고등학교별 컷라인</button>
+    <button role="tab" id="tab-look" aria-selected="false" aria-controls="p-look">우리 반 점수 조회</button>
+  </div>
+
+  <section class="panel" id="p-dash" role="tabpanel" aria-labelledby="tab-dash">
+    <div class="tools">
+      <label>정렬
+        <select id="sort-dash">
+          <option value="set">설정 순서</option>
+          <option value="cut">컷라인 높은 순</option>
+          <option value="rate">경쟁률 높은 순</option>
+        </select>
+      </label>
+    </div>
+    <div class="tablebox"><table>
+      <thead><tr><th>고등학교</th><th>정원</th><th>지원자</th><th>지원자/정원</th><th>컷라인</th><th>상태</th></tr></thead>
+      <tbody id="dash-body"></tbody>
+    </table></div>
+    <p class="legend">컷라인은 1지망 지원자를 점수순으로 세웠을 때 정원 번째 학생의 점수입니다. 정원에 못 미치면 지원자 중 최저점이며 '미달'로 표시합니다. 막대의 검은 선은 정원(100%) 위치입니다<em></em>.</p>
+  </section>
+
+  <section class="panel" id="p-look" role="tabpanel" aria-labelledby="tab-look" hidden>
+    <div class="form">
+      <label for="scores">학생 점수</label>
+      <textarea id="scores" placeholder="한 줄에 한 명씩 입력하세요.&#10;412.5&#10;3번 398&#10;코드A 376.5"></textarea>
+      <p class="hint">'점수'만 쓰거나 '코드(공백)점수' 형식으로 쓰세요. 엑셀에서 복사해 붙여넣어도 됩니다. 이름 대신 번호나 코드를 권장합니다.</p>
+      <div class="row">
+        <label>희망 고등학교 <select id="pick"><option value="">선택 안 함</option></select></label>
+        <label>정렬 <select id="sort-look">
+          <option value="chance">합격 가능성 높은 순</option>
+          <option value="cut">컷라인 높은 순</option>
+        </select></label>
+        <button class="act" id="go" type="button">등위 확인</button>
+      </div>
+      <div class="err" id="look-err" role="alert"></div>
+    </div>
+    <div id="results"></div>
+  </section>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const SAFE_RATIO = 0.95, RISK_RATIO = 1.05;
+let DATA = null;
+const $ = id => document.getElementById(id);
+const fmt = n => n == null ? '-' : Number(n).toLocaleString('ko-KR', {maximumFractionDigits: 2});
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else el.setAttribute(k, v);
+  }
+  kids.flat().forEach(k => el.append(k instanceof Node ? k : document.createTextNode(k)));
+  return el;
+}
+
+fetch('data.json?t=' + Date.now())
+  .then(r => { if (!r.ok) throw new Error('data.json을 불러오지 못했습니다 (' + r.status + ')'); return r.json(); })
+  .then(init)
+  .catch(e => { $('meta').textContent = ''; $('meta').append(h('span', {class: 'err', text: e.message})); });
+
+function init(d) {
+  DATA = d;
+  const m = $('meta'); m.textContent = '';
+  m.append(h('span', {text: '마지막 병합 ' + (d.updated || '-')}));
+  const pr = d.progress || {};
+  if (pr.total) {
+    const pct = Math.min(100, Math.round(pr.done / pr.total * 100));
+    m.append(h('span', {class: 'meter'}, '입력 ' + pr.done + '/' + pr.total + '학급 (' + pct + '%)',
+      h('i', {}, h('b', {style: 'width:' + pct + '%'}))));
+  } else if (pr.done) {
+    m.append(h('span', {text: '입력 ' + pr.done + '학급'}));
+  }
+  $('foot').textContent = (d.notice || '참고용 자료입니다.') + ' 입력한 점수는 이 화면에서만 계산되며 저장·전송되지 않습니다. 입력이 덜 끝났다면 컷라인과 등위가 달라질 수 있습니다.';
+  d.schools.forEach(s => $('pick').append(h('option', {value: s.name, text: s.name})));
+  renderDash();
+  $('sort-dash').addEventListener('change', renderDash);
+}
+
+function statusClass(s) {
+  if (s.status === '경쟁' || s.status === '정원 충족') return 'edge';
+  return 'open';
+}
+
+function renderDash() {
+  const mode = $('sort-dash').value;
+  const list = DATA.schools.slice();
+  if (mode === 'cut') list.sort((a, b) => (b.cutline ?? -1) - (a.cutline ?? -1));
+  if (mode === 'rate') list.sort((a, b) => (b.applicants / (b.cap || 1)) - (a.applicants / (a.cap || 1)));
+  const body = $('dash-body'); body.textContent = '';
+  list.forEach(s => {
+    const ratio = s.cap ? s.applicants / s.cap : 0;
+    const fill = h('span', {class: ratio > 1 ? 'over' : '', style: 'width:' + Math.min(ratio / 1.5, 1) * 100 + '%'});
+    const diff = s.applicants - s.cap;
+    const stText = s.status === '경쟁' ? '경쟁 +' + diff : s.status === '미달' ? '미달 ' + diff : s.status;
+    body.append(h('tr', {},
+      h('td', {class: 'name'}, s.name),
+      h('td', {text: fmt(s.cap)}),
+      h('td', {text: fmt(s.applicants)}),
+      h('td', {}, h('div', {class: 'bar', title: Math.round(ratio * 100) + '%'}, fill, h('em')), h('small', {text: (ratio * 100).toFixed(0) + '%'})),
+      h('td', {}, h('span', {class: 'cut', text: fmt(s.cutline)}), s.tie > 1 ? h('small', {text: '동점 ' + s.tie + '명'}) : ''),
+      h('td', {}, h('span', {class: 'chip ' + (s.status === '경쟁' ? 'risk' : s.status === '미달' ? 'open' : 'hard'), text: stText}))
+    ));
+  });
+}
+
+/* 판정: 정원 대비 예상 등위 비율 */
+function judge(s, score) {
+  const rank = s.scores.filter(x => x > score).length + 1;
+  const base = {rank: rank, ratio: s.cap ? rank / s.cap : 0};
+  if (s.applicants < s.cap) return {...base, label: '지원 가능', cls: 'open', key: -1};
+  if (rank <= s.cap * SAFE_RATIO) return {...base, label: '안정', cls: 'safe', key: base.ratio};
+  if (rank <= s.cap) return {...base, label: '소신', cls: 'edge', key: base.ratio};
+  if (rank <= s.cap * RISK_RATIO) return {...base, label: '위험', cls: 'risk', key: base.ratio};
+  return {...base, label: '어려움', cls: 'hard', key: base.ratio};
+}
+
+function parseInput(text) {
+  const out = [], errs = [];
+  text.split(/\r?\n/).forEach((line, i) => {
+    const t = line.trim(); if (!t) return;
+    const tok = t.split(/[\s,\t]+/);
+    const score = Number(tok[tok.length - 1].replace(/,/g, ''));
+    if (isNaN(score)) { errs.push((i + 1) + '번째 줄: 점수를 숫자로 입력하세요 (' + t + ')'); return; }
+    out.push({label: tok.length > 1 ? tok.slice(0, -1).join(' ') : (out.length + 1) + '번째', score: score});
+  });
+  return {out, errs};
+}
+
+$('go').addEventListener('click', () => {
+  const {out, errs} = parseInput($('scores').value);
+  $('look-err').textContent = errs.length ? errs.join(' / ') : (out.length ? '' : '점수를 한 줄 이상 입력하세요.');
+  const box = $('results'); box.textContent = '';
+  if (!out.length) return;
+  const pick = $('pick').value, mode = $('sort-look').value;
+  out.forEach(st => {
+    const rows = DATA.schools.map(s => ({s, j: judge(s, st.score)}));
+    rows.sort((a, b) => {
+      if (pick) { if (a.s.name === pick) return -1; if (b.s.name === pick) return 1; }
+      return mode === 'cut' ? (b.s.cutline ?? -1) - (a.s.cutline ?? -1) : a.j.key - b.j.key;
+    });
+    const tb = h('tbody');
+    rows.forEach(({s, j}) => {
+      const d = s.cutline == null ? null : st.score - s.cutline;
+      const rankText = j.label === '지원 가능' ? s.applicants + '명 지원 / 정원 ' + fmt(s.cap) : j.rank + '등 / 정원 ' + fmt(s.cap);
+      tb.append(h('tr', {class: s.name === pick ? 'pick' : ''},
+        h('td', {class: 'name'}, s.name),
+        h('td', {text: fmt(s.cutline)}),
+        h('td', {class: 'diff ' + (d == null ? '' : d >= 0 ? 'pos' : 'neg'), text: d == null ? '-' : (d >= 0 ? '+' : '') + fmt(d)}),
+        h('td', {text: rankText}),
+        h('td', {}, h('span', {class: 'chip ' + j.cls, text: j.label}))));
+    });
+    box.append(h('div', {class: 'student'},
+      h('h2', {}, st.label, h('span', {text: fmt(st.score) + '점'})),
+      h('div', {class: 'tablebox'}, h('table', {},
+        h('thead', {}, h('tr', {}, h('th', {text: '고등학교'}), h('th', {text: '컷라인'}), h('th', {text: '컷라인과의 차이'}), h('th', {text: '예상 등위'}), h('th', {text: '판정'}))),
+        tb))));
+  });
+  box.append(h('p', {class: 'legend', text: '판정 기준: 정원의 95% 안쪽이면 안정, 정원 안쪽이면 소신, 정원의 105%까지는 위험, 그 밖은 어려움. 지원자가 정원보다 적은 학교는 지원 가능으로 표시합니다.'}));
+});
+
+/* 탭 */
+const tabs = [['tab-dash', 'p-dash'], ['tab-look', 'p-look']];
+tabs.forEach(([t, p]) => $(t).addEventListener('click', () => {
+  tabs.forEach(([t2, p2]) => { $(t2).setAttribute('aria-selected', t2 === t); $(p2).hidden = p2 !== p; });
+}));
+</script>
+</body>
+</html>
