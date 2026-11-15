@@ -14,62 +14,85 @@
   --edge:#8F5A12; --edge-bg:#F9ECD3;
   --risk:#B3402A; --risk-bg:#F9E2DC;
   --hard:#4F5B67; --hard-bg:#E6EAEE;
-  --radius:10px;
+  --radius:12px;
 }
 *{box-sizing:border-box}
 html{color-scheme:light}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;line-height:1.6;font-size:16px}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
-header{padding:8px 0 16px}
-h1{font-size:26px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
-.meta{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:14px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;line-height:1.55;font-size:16px;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 48px}
+header{padding:6px 0 12px}
+h1{font-size:25px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:14px}
 .meter{display:inline-flex;align-items:center;gap:8px}
-.meter i{display:block;width:96px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter i{display:block;width:90px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
 .meter b{display:block;height:100%;background:var(--brand)}
-[role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 18px}
-[role=tab]{font:inherit;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;margin-bottom:-1px}
+[role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:6px 0 16px}
+[role=tab]{flex:1;font:inherit;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:11px 8px;cursor:pointer;margin-bottom:-1px}
 [role=tab][aria-selected=true]{color:var(--brand);border-bottom-color:var(--brand)}
 :focus-visible{outline:3px solid var(--open);outline-offset:2px}
 .panel[hidden]{display:none}
-.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px;font-size:14px;color:var(--muted)}
+.tools{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-bottom:6px;font-size:14px;color:var(--muted)}
 select,textarea,button.act{font:inherit}
-select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
-.tablebox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:640px}
-th,td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:13px;font-weight:600;color:var(--muted);background:#F8FAFB}
-th:first-child,td:first-child{text-align:left}
-tr:last-child td{border-bottom:0}
-td.name{font-weight:600}
-td small{display:block;color:var(--muted);font-size:12px;font-weight:400}
-.cut{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px}
-.bar{position:relative;width:150px;height:10px;background:var(--hard-bg);border-radius:5px;margin-left:auto}
-.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--brand)}
-.bar span.over{background:var(--risk)}
-.bar em{position:absolute;left:66.67%;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
-.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600}
+select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);max-width:100%}
+
+.zone{margin-top:22px}
+.zone-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:0 2px 8px;border-bottom:2px solid var(--brand);margin-bottom:12px}
+.zone-head h2{font-size:20px;margin:0;color:var(--brand)}
+.zone-head .when{font-size:14px;color:var(--muted)}
+.zone-note{font-size:13px;color:var(--muted);margin:-4px 2px 12px}
+.sub{font-size:15px;font-weight:700;color:var(--ink);margin:16px 2px 8px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.name{font-weight:700;font-size:17px;line-height:1.35;word-break:keep-all}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
 .chip.open{color:var(--open);background:var(--open-bg)}
 .chip.safe{color:var(--safe);background:var(--safe-bg)}
 .chip.edge{color:var(--edge);background:var(--edge-bg)}
 .chip.risk{color:var(--risk);background:var(--risk-bg)}
 .chip.hard{color:var(--hard);background:var(--hard-bg)}
-.legend{font-size:13px;color:var(--muted);margin-top:10px}
+.cutrow{display:flex;align-items:baseline;gap:8px;margin-top:8px}
+.cutlabel{font-size:13px;color:var(--muted)}
+.cut{font-variant-numeric:tabular-nums;font-weight:700;font-size:30px;line-height:1.1;letter-spacing:-.01em}
+.cut.none{font-size:20px;color:var(--muted);font-weight:600}
+.tie{font-size:13px;color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:2px 18px;margin-top:8px;font-size:14px;color:var(--muted)}
+.stats b{color:var(--ink);font-variant-numeric:tabular-nums}
+.bar{position:relative;height:8px;background:var(--hard-bg);border-radius:4px;margin:12px 0 2px}
+.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--brand)}
+.bar span.over{background:var(--risk)}
+.bar em{position:absolute;left:66.67%;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:12.5px;color:var(--hard);background:var(--hard-bg);border-radius:6px;padding:2px 8px}
+.tag.g{color:var(--edge);background:var(--edge-bg);font-weight:600}
+.hide-note{font-size:13.5px;color:var(--muted);margin-top:8px}
+.legend{font-size:13px;color:var(--muted);margin-top:14px}
 .legend em{display:inline-block;width:2px;height:12px;background:var(--ink);vertical-align:-2px;margin:0 4px}
+
 .form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
-.form label{display:block;font-weight:600;margin-bottom:6px}
+.form label.t{display:block;font-weight:600;margin-bottom:6px}
 textarea{width:100%;min-height:120px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;resize:vertical}
-.row{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-top:12px}
-button.act{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 20px;font-weight:600;cursor:pointer}
+.row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:12px;font-size:14px}
+button.act{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 22px;font-weight:600;cursor:pointer}
 button.act:hover{background:#0A3A4C}
-.hint{font-size:13px;color:var(--muted);margin-top:6px}
+.hint{font-size:13px;color:var(--muted);margin:6px 0 0}
 .err{color:var(--risk);font-size:14px;margin-top:8px}
 .student{margin-top:20px}
-.student h2{font-size:18px;margin:0 0 8px;display:flex;gap:12px;align-items:baseline}
+.student h2{font-size:18px;margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .student h2 span{font-weight:400;color:var(--muted);font-size:15px}
-tr.pick td{background:#FFF9E8}
-td.diff.pos{color:var(--safe)} td.diff.neg{color:var(--risk)}
+.res{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.res .zh{font-size:13px;font-weight:700;color:var(--brand);background:#F4F8FA;padding:6px 14px;border-bottom:1px solid var(--line)}
+.li{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li.pick{background:#FFF9E8}
+.li .l{min-width:0}
+.li .n{font-weight:600;line-height:1.35;word-break:keep-all}
+.li .s{font-size:13px;color:var(--muted);margin-top:2px}
+.li .r{text-align:right;flex:none}
+.li .d{font-size:13px;margin-top:4px;color:var(--muted);font-variant-numeric:tabular-nums}
+.d.pos{color:var(--safe)} .d.neg{color:var(--risk)}
 .foot{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
-@media (max-width:600px){h1{font-size:22px}.wrap{padding:14px 10px 40px}}
+@media (min-width:600px){.wrap{padding-top:28px}h1{font-size:28px}}
 </style>
 </head>
 <body>
@@ -88,23 +111,20 @@ td.diff.pos{color:var(--safe)} td.diff.neg{color:var(--risk)}
     <div class="tools">
       <label>정렬
         <select id="sort-dash">
-          <option value="set">설정 순서</option>
+          <option value="set">기본 순서</option>
           <option value="cut">컷라인 높은 순</option>
           <option value="rate">경쟁률 높은 순</option>
         </select>
       </label>
     </div>
-    <div class="tablebox"><table>
-      <thead><tr><th>고등학교</th><th>정원</th><th>지원자</th><th>지원자/정원</th><th>컷라인</th><th>상태</th></tr></thead>
-      <tbody id="dash-body"></tbody>
-    </table></div>
-    <p class="legend">컷라인은 1지망 지원자를 점수순으로 세웠을 때 정원 번째 학생의 점수입니다. 정원에 못 미치면 지원자 중 최저점이며 '미달'로 표시합니다. 막대의 검은 선은 정원(100%) 위치입니다<em></em>.</p>
+    <div id="dash"></div>
+    <p class="legend">컷라인은 1지망 지원자를 점수순으로 세웠을 때 일반전형 정원 번째 학생의 점수입니다. 정원에 못 미치면 지원자 중 최저점이며 '미달'로 표시합니다. 막대의 검은 선은 정원(100%) 위치입니다<em></em>.</p>
   </section>
 
   <section class="panel" id="p-look" role="tabpanel" aria-labelledby="tab-look" hidden>
     <div class="form">
-      <label for="scores">학생 점수</label>
-      <textarea id="scores" placeholder="한 줄에 한 명씩 입력하세요.&#10;412.5&#10;3번 398&#10;코드A 376.5"></textarea>
+      <label class="t" for="scores">학생 점수</label>
+      <textarea id="scores" placeholder="한 줄에 한 명씩 입력하세요.&#10;172.5&#10;3번 158&#10;코드A 136.5"></textarea>
       <p class="hint">'점수'만 쓰거나 '코드(공백)점수' 형식으로 쓰세요. 엑셀에서 복사해 붙여넣어도 됩니다. 이름 대신 번호나 코드를 권장합니다.</p>
       <div class="row">
         <label>희망 고등학교 <select id="pick"><option value="">선택 안 함</option></select></label>
@@ -124,6 +144,10 @@ td.diff.pos{color:var(--safe)} td.diff.neg{color:var(--risk)}
 
 <script>
 const SAFE_RATIO = 0.95, RISK_RATIO = 1.05;
+const ZONES = [
+  {key: '특성화', title: '특성화고', note: '정원은 일반전형 기준이며, 취업희망자 등 특별전형 지원자는 이 현황에 포함되지 않습니다.'},
+  {key: '일반계', title: '일반계고', note: ''}
+];
 let DATA = null;
 const $ = id => document.getElementById(id);
 const fmt = n => n == null ? '-' : Number(n).toLocaleString('ko-KR', {maximumFractionDigits: 2});
@@ -133,7 +157,7 @@ function h(tag, attrs, ...kids) {
   for (const [k, v] of Object.entries(attrs || {})) {
     if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else el.setAttribute(k, v);
   }
-  kids.flat().forEach(k => el.append(k instanceof Node ? k : document.createTextNode(k)));
+  kids.flat().forEach(k => { if (k != null && k !== '') el.append(k instanceof Node ? k : document.createTextNode(k)); });
   return el;
 }
 
@@ -142,8 +166,23 @@ fetch('data.json?t=' + Date.now())
   .then(init)
   .catch(e => { $('meta').textContent = ''; $('meta').append(h('span', {class: 'err', text: e.message})); });
 
+/* 구역 나누기: 특성화 → 일반계 → (구분 없는 경우) */
+function zonesOf(schools) {
+  const used = new Set();
+  const out = [];
+  ZONES.forEach(z => {
+    const list = schools.filter(s => s.group === z.key);
+    if (list.length) { out.push({...z, list}); list.forEach(s => used.add(s)); }
+  });
+  const rest = schools.filter(s => !used.has(s));
+  if (rest.length) out.push({key: '', title: '고등학교', note: '', list: rest});
+  out.forEach(z => { z.apply = (z.list.find(s => s.apply) || {}).apply || ''; });
+  return out;
+}
+
 function init(d) {
   DATA = d;
+  DATA.min = d.min ?? 50; DATA.max = d.max ?? 200;
   const m = $('meta'); m.textContent = '';
   m.append(h('span', {text: '마지막 병합 ' + (d.updated || '-')}));
   const pr = d.progress || {};
@@ -155,43 +194,93 @@ function init(d) {
     m.append(h('span', {text: '입력 ' + pr.done + '학급'}));
   }
   $('foot').textContent = (d.notice || '참고용 자료입니다.') + ' 입력한 점수는 이 화면에서만 계산되며 저장·전송되지 않습니다. 입력이 덜 끝났다면 컷라인과 등위가 달라질 수 있습니다.';
-  d.schools.forEach(s => $('pick').append(h('option', {value: s.name, text: s.name})));
+  zonesOf(d.schools).forEach(z => {
+    const og = h('optgroup', {label: z.title});
+    z.list.forEach(s => og.append(h('option', {value: s.name, text: s.name})));
+    $('pick').append(og);
+  });
   renderDash();
   $('sort-dash').addEventListener('change', renderDash);
 }
 
-function statusClass(s) {
-  if (s.status === '경쟁' || s.status === '정원 충족') return 'edge';
-  return 'open';
+function statusChip(s) {
+  const diff = s.applicants - s.cap;
+  if (s.status === '경쟁') return h('span', {class: 'chip risk', text: '경쟁 +' + diff});
+  if (s.status === '미달') return h('span', {class: 'chip open', text: '미달 ' + diff});
+  if (s.status === '정원 충족') return h('span', {class: 'chip edge', text: '정원 충족'});
+  return h('span', {class: 'chip hard', text: s.status});
+}
+
+function genderTag(s) {
+  if (s.gender === '여') return h('span', {class: 'tag g', text: '여학생만'});
+  if (s.gender === '남') return h('span', {class: 'tag g', text: '남학생만'});
+  return null;
+}
+
+function schoolCard(s, title) {
+  const ratio = s.cap ? s.applicants / s.cap : 0;
+  const tags = [genderTag(s)];
+  if (s.total && Number(s.total) !== Number(s.cap)) tags.push(h('span', {class: 'tag', text: '전체 모집 ' + s.total + '명 (특별전형 포함)'}));
+  if (s.note) tags.push(h('span', {class: 'tag', text: s.note}));
+  const cutRow = s.hidden
+    ? h('div', {class: 'hide-note', text: '지원자가 적어(' + (DATA.minShow || 10) + '명 미만) 컷라인과 점수는 공개하지 않습니다. 정원에 못 미치므로 지원 가능한 상태입니다.'})
+    : h('div', {class: 'cutrow'},
+        h('span', {class: 'cutlabel', text: '컷라인'}),
+        h('span', {class: 'cut' + (s.cutline == null ? ' none' : ''), text: s.cutline == null ? '지원자 없음' : fmt(s.cutline)}),
+        s.tie > 1 ? h('span', {class: 'tie', text: '동점 ' + s.tie + '명'}) : '');
+  return h('div', {class: 'card'},
+    h('div', {class: 'card-top'}, h('div', {class: 'name', text: title || s.name}), statusChip(s)),
+    cutRow,
+    h('div', {class: 'stats'},
+      h('span', {}, '정원 ', h('b', {text: fmt(s.cap)})),
+      h('span', {}, '지원 ', h('b', {text: fmt(s.applicants)})),
+      h('span', {}, '지원율 ', h('b', {text: Math.round(ratio * 100) + '%'}))),
+    h('div', {class: 'bar', 'aria-hidden': 'true'},
+      h('span', {class: ratio > 1 ? 'over' : '', style: 'width:' + Math.min(ratio / 1.5, 1) * 100 + '%'}), h('em')),
+    tags.filter(Boolean).length ? h('div', {class: 'tags'}, tags.filter(Boolean)) : '');
+}
+
+function sortList(list, mode) {
+  const l = list.slice();
+  if (mode === 'cut') l.sort((a, b) => (b.cutline ?? -1) - (a.cutline ?? -1));
+  if (mode === 'rate') l.sort((a, b) => (b.applicants / (b.cap || 1)) - (a.applicants / (a.cap || 1)));
+  return l;
 }
 
 function renderDash() {
   const mode = $('sort-dash').value;
-  const list = DATA.schools.slice();
-  if (mode === 'cut') list.sort((a, b) => (b.cutline ?? -1) - (a.cutline ?? -1));
-  if (mode === 'rate') list.sort((a, b) => (b.applicants / (b.cap || 1)) - (a.applicants / (a.cap || 1)));
-  const body = $('dash-body'); body.textContent = '';
-  list.forEach(s => {
-    const ratio = s.cap ? s.applicants / s.cap : 0;
-    const fill = h('span', {class: ratio > 1 ? 'over' : '', style: 'width:' + Math.min(ratio / 1.5, 1) * 100 + '%'});
-    const diff = s.applicants - s.cap;
-    const stText = s.status === '경쟁' ? '경쟁 +' + diff : s.status === '미달' ? '미달 ' + diff : s.status;
-    body.append(h('tr', {},
-      h('td', {class: 'name'}, s.name),
-      h('td', {text: fmt(s.cap)}),
-      h('td', {text: fmt(s.applicants)}),
-      h('td', {}, h('div', {class: 'bar', title: Math.round(ratio * 100) + '%'}, fill, h('em')), h('small', {text: (ratio * 100).toFixed(0) + '%'})),
-      h('td', {}, h('span', {class: 'cut', text: fmt(s.cutline)}), s.tie > 1 ? h('small', {text: '동점 ' + s.tie + '명'}) : ''),
-      h('td', {}, h('span', {class: 'chip ' + (s.status === '경쟁' ? 'risk' : s.status === '미달' ? 'open' : 'hard'), text: stText}))
-    ));
+  const box = $('dash'); box.textContent = '';
+  zonesOf(DATA.schools).forEach(z => {
+    const sec = h('div', {class: 'zone'},
+      h('div', {class: 'zone-head'}, h('h2', {text: z.title}), z.apply ? h('span', {class: 'when', text: '원서접수 ' + z.apply}) : ''));
+    if (z.note) sec.append(h('p', {class: 'zone-note', text: z.note}));
+    if (z.key === '특성화') {
+      // 학교별로 묶고 그 안에 학과 카드
+      const groups = new Map();
+      z.list.forEach(s => {
+        const i = s.name.indexOf(' ');
+        const school = i > 0 ? s.name.slice(0, i) : s.name;
+        const dept = i > 0 ? s.name.slice(i + 1) : s.name;
+        if (!groups.has(school)) groups.set(school, []);
+        groups.get(school).push({s, dept});
+      });
+      groups.forEach((arr, school) => {
+        sec.append(h('div', {class: 'sub', text: school}));
+        const sorted = sortList(arr.map(x => x.s), mode);
+        sorted.forEach(s => sec.append(schoolCard(s, arr.find(x => x.s === s).dept)));
+      });
+    } else {
+      sortList(z.list, mode).forEach(s => sec.append(schoolCard(s)));
+    }
+    box.append(sec);
   });
 }
 
 /* 판정: 정원 대비 예상 등위 비율 */
 function judge(s, score) {
+  if (s.hidden || s.applicants < s.cap) return {rank: null, label: '지원 가능', cls: 'open', key: -1};
   const rank = s.scores.filter(x => x > score).length + 1;
   const base = {rank: rank, ratio: s.cap ? rank / s.cap : 0};
-  if (s.applicants < s.cap) return {...base, label: '지원 가능', cls: 'open', key: -1};
   if (rank <= s.cap * SAFE_RATIO) return {...base, label: '안정', cls: 'safe', key: base.ratio};
   if (rank <= s.cap) return {...base, label: '소신', cls: 'edge', key: base.ratio};
   if (rank <= s.cap * RISK_RATIO) return {...base, label: '위험', cls: 'risk', key: base.ratio};
@@ -200,12 +289,15 @@ function judge(s, score) {
 
 function parseInput(text) {
   const out = [], errs = [];
+  let n = 0;
   text.split(/\r?\n/).forEach((line, i) => {
     const t = line.trim(); if (!t) return;
+    n++;
     const tok = t.split(/[\s,\t]+/);
     const score = Number(tok[tok.length - 1].replace(/,/g, ''));
     if (isNaN(score)) { errs.push((i + 1) + '번째 줄: 점수를 숫자로 입력하세요 (' + t + ')'); return; }
-    out.push({label: tok.length > 1 ? tok.slice(0, -1).join(' ') : (out.length + 1) + '번째', score: score});
+    if (score < DATA.min || score > DATA.max) { errs.push((i + 1) + '번째 줄: 점수는 ' + DATA.min + '~' + DATA.max + ' 사이여야 합니다 (' + t + ')'); return; }
+    out.push({label: tok.length > 1 ? tok.slice(0, -1).join(' ') : '입력 ' + n, score: score});
   });
   return {out, errs};
 }
@@ -217,29 +309,30 @@ $('go').addEventListener('click', () => {
   if (!out.length) return;
   const pick = $('pick').value, mode = $('sort-look').value;
   out.forEach(st => {
-    const rows = DATA.schools.map(s => ({s, j: judge(s, st.score)}));
-    rows.sort((a, b) => {
-      if (pick) { if (a.s.name === pick) return -1; if (b.s.name === pick) return 1; }
-      return mode === 'cut' ? (b.s.cutline ?? -1) - (a.s.cutline ?? -1) : a.j.key - b.j.key;
+    const res = h('div', {class: 'res'});
+    zonesOf(DATA.schools).forEach(z => {
+      const rows = z.list.map(s => ({s, j: judge(s, st.score)}));
+      rows.sort((a, b) => {
+        if (pick) { if (a.s.name === pick) return -1; if (b.s.name === pick) return 1; }
+        return mode === 'cut' ? (b.s.cutline ?? -1) - (a.s.cutline ?? -1) : a.j.key - b.j.key;
+      });
+      res.append(h('div', {class: 'zh', text: z.title + (z.apply ? ' · 원서접수 ' + z.apply : '')}));
+      rows.forEach(({s, j}) => {
+        const d = s.cutline == null ? null : st.score - s.cutline;
+        const sub = j.rank == null
+          ? '지원 ' + fmt(s.applicants) + '명 / 정원 ' + fmt(s.cap)
+          : '예상 ' + j.rank + '등 / 정원 ' + fmt(s.cap) + ' · 컷라인 ' + fmt(s.cutline);
+        const g = genderTag(s);
+        res.append(h('div', {class: 'li' + (s.name === pick ? ' pick' : '')},
+          h('div', {class: 'l'}, h('div', {class: 'n', text: s.name}), h('div', {class: 's', text: sub + (g ? ' · ' + g.textContent : '')})),
+          h('div', {class: 'r'},
+            h('span', {class: 'chip ' + j.cls, text: j.label}),
+            d == null ? '' : h('div', {class: 'd ' + (d >= 0 ? 'pos' : 'neg'), text: '컷라인 ' + (d >= 0 ? '+' : '') + fmt(d)}))));
+      });
     });
-    const tb = h('tbody');
-    rows.forEach(({s, j}) => {
-      const d = s.cutline == null ? null : st.score - s.cutline;
-      const rankText = j.label === '지원 가능' ? s.applicants + '명 지원 / 정원 ' + fmt(s.cap) : j.rank + '등 / 정원 ' + fmt(s.cap);
-      tb.append(h('tr', {class: s.name === pick ? 'pick' : ''},
-        h('td', {class: 'name'}, s.name),
-        h('td', {text: fmt(s.cutline)}),
-        h('td', {class: 'diff ' + (d == null ? '' : d >= 0 ? 'pos' : 'neg'), text: d == null ? '-' : (d >= 0 ? '+' : '') + fmt(d)}),
-        h('td', {text: rankText}),
-        h('td', {}, h('span', {class: 'chip ' + j.cls, text: j.label}))));
-    });
-    box.append(h('div', {class: 'student'},
-      h('h2', {}, st.label, h('span', {text: fmt(st.score) + '점'})),
-      h('div', {class: 'tablebox'}, h('table', {},
-        h('thead', {}, h('tr', {}, h('th', {text: '고등학교'}), h('th', {text: '컷라인'}), h('th', {text: '컷라인과의 차이'}), h('th', {text: '예상 등위'}), h('th', {text: '판정'}))),
-        tb))));
+    box.append(h('div', {class: 'student'}, h('h2', {}, st.label, h('span', {text: fmt(st.score) + '점'})), res));
   });
-  box.append(h('p', {class: 'legend', text: '판정 기준: 정원의 95% 안쪽이면 안정, 정원 안쪽이면 소신, 정원의 105%까지는 위험, 그 밖은 어려움. 지원자가 정원보다 적은 학교는 지원 가능으로 표시합니다.'}));
+  box.append(h('p', {class: 'legend', text: '판정 기준: 정원의 95% 안쪽이면 안정, 정원 안쪽이면 소신, 정원의 105%까지는 위험, 그 밖은 어려움. 지원자가 정원보다 적은 곳은 지원 가능으로 표시합니다. 특성화고의 취업희망자 특별전형은 반영되지 않습니다.'}));
 });
 
 /* 탭 */
