@@ -19,7 +19,7 @@
 *{box-sizing:border-box}
 html{color-scheme:light}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;line-height:1.55;font-size:16px;-webkit-text-size-adjust:100%}
-.wrap{max-width:760px;margin:0 auto;padding:18px 16px 48px}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 48px}
 header{padding:6px 0 12px}
 h1{font-size:25px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
 .meta{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:14px}
@@ -35,7 +35,11 @@ h1{font-size:25px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
 select,textarea,button.act{font:inherit}
 select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);max-width:100%}
 
+.cols{display:grid;grid-template-columns:1fr;gap:0 28px;align-items:start}
+@media (min-width:760px){.cols{grid-template-columns:1fr 1fr}}
 .zone{margin-top:22px}
+.zone[data-z="일반계"] .zone-head{border-bottom-color:var(--open)}
+.zone[data-z="일반계"] .zone-head h2{color:var(--open)}
 .zone-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:0 2px 8px;border-bottom:2px solid var(--brand);margin-bottom:12px}
 .zone-head h2{font-size:20px;margin:0;color:var(--brand)}
 .zone-head .when{font-size:14px;color:var(--muted)}
@@ -80,7 +84,7 @@ button.act:hover{background:#0A3A4C}
 .student{margin-top:20px}
 .student h2{font-size:18px;margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .student h2 span{font-weight:400;color:var(--muted);font-size:15px}
-.res{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.res{margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .res .zh{font-size:13px;font-weight:700;color:var(--brand);background:#F4F8FA;padding:6px 14px;border-bottom:1px solid var(--line)}
 .li{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
 .li:last-child{border-bottom:0}
@@ -250,8 +254,10 @@ function sortList(list, mode) {
 function renderDash() {
   const mode = $('sort-dash').value;
   const box = $('dash'); box.textContent = '';
+  const cols = h('div', {class: 'cols'});
+  box.append(cols);
   zonesOf(DATA.schools).forEach(z => {
-    const sec = h('div', {class: 'zone'},
+    const sec = h('div', {class: 'zone', 'data-z': z.key},
       h('div', {class: 'zone-head'}, h('h2', {text: z.title}), z.apply ? h('span', {class: 'when', text: '원서접수 ' + z.apply}) : ''));
     if (z.note) sec.append(h('p', {class: 'zone-note', text: z.note}));
     if (z.key === '특성화') {
@@ -272,7 +278,7 @@ function renderDash() {
     } else {
       sortList(z.list, mode).forEach(s => sec.append(schoolCard(s)));
     }
-    box.append(sec);
+    cols.append(sec);
   });
 }
 
@@ -309,8 +315,10 @@ $('go').addEventListener('click', () => {
   if (!out.length) return;
   const pick = $('pick').value, mode = $('sort-look').value;
   out.forEach(st => {
-    const res = h('div', {class: 'res'});
+    const cols = h('div', {class: 'cols'});
     zonesOf(DATA.schools).forEach(z => {
+      const res = h('div', {class: 'res'});
+      cols.append(res);
       const rows = z.list.map(s => ({s, j: judge(s, st.score)}));
       rows.sort((a, b) => {
         if (pick) { if (a.s.name === pick) return -1; if (b.s.name === pick) return 1; }
@@ -330,7 +338,7 @@ $('go').addEventListener('click', () => {
             d == null ? '' : h('div', {class: 'd ' + (d >= 0 ? 'pos' : 'neg'), text: '컷라인 ' + (d >= 0 ? '+' : '') + fmt(d)}))));
       });
     });
-    box.append(h('div', {class: 'student'}, h('h2', {}, st.label, h('span', {text: fmt(st.score) + '점'})), res));
+    box.append(h('div', {class: 'student'}, h('h2', {}, st.label, h('span', {text: fmt(st.score) + '점'})), cols));
   });
   box.append(h('p', {class: 'legend', text: '판정 기준: 정원의 95% 안쪽이면 안정, 정원 안쪽이면 소신, 정원의 105%까지는 위험, 그 밖은 어려움. 지원자가 정원보다 적은 곳은 지원 가능으로 표시합니다. 특성화고의 취업희망자 특별전형은 반영되지 않습니다.'}));
 });
