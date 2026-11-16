@@ -116,6 +116,19 @@ button.act:hover{background:#0A3A4C}
 .hb s{font-size:11px;color:var(--muted);text-decoration:none;font-variant-numeric:tabular-nums;line-height:1.2}
 .hx{display:flex;gap:3px;margin-top:3px}
 .hx span{flex:1;min-width:0;text-align:center;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hb{background:none;border:0;padding:0;font:inherit;cursor:pointer;color:inherit}
+.hb:disabled{cursor:default}
+.hb:not(:disabled):hover u{filter:brightness(.9)}
+.hb:focus-visible{outline:2px solid var(--brand);outline-offset:1px;border-radius:3px}
+.hb.sel u{box-shadow:0 0 0 2px var(--ink)}
+.pick-box{margin-top:10px;padding:10px 12px;background:#F4F8FA;border-radius:8px;font-size:14px}
+.pick-box .ph{font-weight:600;margin-bottom:6px}
+.pick-box .ph span{font-weight:400;color:var(--muted)}
+.sc{display:flex;flex-wrap:wrap;gap:6px}
+.sc span{background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-variant-numeric:tabular-nums}
+.sc span b{font-size:15px}
+.sc span i{font-style:normal;font-size:12px;color:var(--muted);margin-left:4px}
+.sc span.cutm{border-color:var(--brand);background:#E7F1F5}
 .hl{font-size:12.5px;color:var(--muted);margin-top:8px}
 .hl i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px;font-style:normal}
 .mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -281,12 +294,31 @@ function detailBox(s) {
   const xs = h('div', {class: 'hx', 'aria-hidden': 'true'});
   const els = bins.map(x => {
     const inside = cut != null && x.b + W > cut; // 컷라인 이상이 들어 있는 구간
-    const e = h('div', {class: 'hb' + (inside ? ' in' : '')},
+    const e = h('button', {type: 'button', class: 'hb' + (inside ? ' in' : ''), 'aria-label': x.b + '~' + (x.b + W - 0.5) + '점 ' + x.c + '명'},
       h('s', {text: x.c || ''}), h('u', {style: 'height:' + (x.c ? Math.max(4, x.c / mx * 64) : 0) + 'px'}));
+    if (!x.c) e.disabled = true;
+    e.addEventListener('click', () => showBin(x, e));
     hist.append(e); xs.append(h('span', {text: x.b}));
     return e;
   });
-  box.append(h('h4', {text: '점수대별 분포 (10점 단위, 막대 아래 숫자는 구간 시작 점수)'}), hist, xs,
+  const pickBox = h('div', {class: 'pick-box', hidden: ''});
+  pickBox.hidden = true;
+  let selEl = null;
+  function showBin(x, e) {
+    if (selEl === e) { e.classList.remove('sel'); selEl = null; pickBox.hidden = true; return; }
+    if (selEl) selEl.classList.remove('sel');
+    selEl = e; e.classList.add('sel');
+    const list = desc.filter(v => v >= x.b && v < x.b + W);
+    pickBox.textContent = '';
+    pickBox.append(h('div', {class: 'ph'}, x.b + '~' + (x.b + W - 0.5) + '점 구간 ', h('span', {text: list.length + '명 · 등수는 전체 지원자 기준'})));
+    const sc = h('div', {class: 'sc'});
+    list.forEach(v => {
+      const rank = desc.filter(y => y > v).length + 1;
+      sc.append(h('span', {class: cut != null && v === cut ? 'cutm' : ''}, h('b', {text: fmt(v)}), h('i', {text: rank + '등' + (cut != null && v === cut ? ' · 컷라인' : '')})));
+    });
+    pickBox.append(sc); pickBox.hidden = false;
+  }
+  box.append(h('h4', {text: '점수대별 분포 (막대를 누르면 그 구간의 점수가 나옵니다)'}), hist, xs, pickBox,
     h('div', {class: 'hl'}, h('i', {style: 'background:var(--brand)'}), s.status === '미달' ? '지원자 전체가 정원 안' : '컷라인 이상 구간',
       '  ', h('i', {style: 'background:#C9D6DD;margin-left:8px'}), '컷라인 미만 구간'));
 
