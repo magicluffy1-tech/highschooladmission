@@ -47,6 +47,14 @@ select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;backgroun
 .sub{font-size:15px;font-weight:700;color:var(--ink);margin:16px 2px 8px}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.card.acc{border-left:7px solid var(--acc);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 9%,#fff),#fff 70%)}
+.card.acc .name{color:var(--acc)}
+.grp{border:2px solid var(--acc);border-radius:14px;background:color-mix(in srgb,var(--acc) 6%,#fff);margin:14px 0 18px;overflow:hidden}
+.grp-h{background:var(--acc);color:#fff;font-weight:800;font-size:18px;padding:9px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.grp-h span{font-size:13px;font-weight:600;opacity:.9}
+.grp-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;padding:10px;align-items:start}
+.grp-b .card{margin:0;background:#fff}
+.grp-b .card.open-d,.grp-b .card:has(.sprow.on){grid-column:1/-1}
 .card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .name{font-weight:700;font-size:17px;line-height:1.35;word-break:keep-all}
 .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
@@ -96,21 +104,22 @@ button.act:hover{background:#0A3A4C}
 .li .d{font-size:13px;margin-top:4px;color:var(--muted);font-variant-numeric:tabular-nums}
 .d.pos{color:var(--safe)} .d.neg{color:var(--risk)}
 
-.spbox{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
-.spbox h4{margin:0 0 6px;font-size:13px;color:var(--muted);font-weight:600}
-.sprow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:5px 0}
-.sprow .sn{font-weight:600;font-size:14px;word-break:keep-all}
-.sprow .sc{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.spbar{grid-column:1/3;height:6px;background:#E6EAEE;border-radius:3px;overflow:hidden}
-.spbar i{display:block;height:100%;background:var(--brand);border-radius:3px}
+.spbox{margin-top:12px;background:#F4F7F9;border-radius:10px;padding:10px 12px}
+.spbox h4{margin:0 0 6px;font-size:15px;color:var(--ink);font-weight:700}
+.sprow{display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center;padding:7px 6px}
+.sprow .sn{font-weight:700;font-size:17px;word-break:keep-all}
+.sprow .sc{white-space:nowrap;font-size:14.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sprow .chip{font-size:14px}
+.spbar{grid-column:1/3;height:7px;background:#DDE4E9;border-radius:4px;overflow:hidden}
+.spbar i{display:block;height:100%;background:var(--brand);border-radius:4px}
 .spbar i.over{background:var(--risk)}
+.spnote{font-size:13px;color:var(--muted);margin-top:6px}
 .sprow.clk{cursor:pointer;border-radius:6px}
 .sprow.clk:hover{background:#F2F5F7}
 .sprow.on .caret{display:inline-block;transform:rotate(180deg)}
 .caret{color:var(--brand);font-size:12px}
-.spdetail{margin:2px 0 10px;padding:10px 12px;background:#F7F9FA;border:1px solid var(--line);border-radius:8px}
+.spdetail{margin:2px 0 10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
 .spdetail .detail{margin:0;padding:0;border:0}
-.spnote{font-size:12px;color:var(--muted);margin-top:4px}
 .alt{margin-top:6px;font-size:12.5px;line-height:1.5;background:var(--open-bg);color:var(--open);border-radius:6px;padding:4px 8px}
 .alt b{font-weight:700}
 .more{display:flex;align-items:center;gap:4px;margin-top:10px;background:none;border:0;padding:4px 0;color:var(--brand);font-weight:600;font-size:14px;cursor:pointer}
@@ -217,6 +226,7 @@ const fmt = n => n == null ? '-' : Number(n).toLocaleString('ko-KR', {maximumFra
 function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null) continue;
     if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else el.setAttribute(k, v);
   }
   kids.flat().forEach(k => { if (k != null && k !== '') el.append(k instanceof Node ? k : document.createTextNode(k)); });
@@ -387,7 +397,7 @@ const SPOPEN = new Set();
 function spBox(s) {
   const list = spList(s);
   if (!list.length) return '';
-  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형 현황 (일반전형과 별도 모집) · 전형을 누르면 점수 분포'}));
+  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형 현황 · 누르면 점수 분포'}));
   list.forEach(x => {
     const st = spState(x);
     const w = x.cap ? Math.min(x.cnt / x.cap, 1) * 100 : (x.cnt ? 100 : 0);
@@ -416,11 +426,13 @@ function spBox(s) {
     box.append(row, slot);
     if (can && SPOPEN.has(key)) toggle();
   });
-  box.append(h('div', {class: 'spnote', text: '희망 인원은 1지망 기준입니다. 선발 방법(서류·면접 등)은 모집요강을 확인하세요.'}));
+  box.append(h('div', {class: 'spnote', text: '일반전형과 별도 모집 · 희망 인원은 1지망 기준 · 선발 방법은 모집요강 확인'}));
   return box;
 }
 
-function schoolCard(s, title) {
+const ACC_G = ['#0E6E7E', '#3F51A3', '#9A5B0F', '#7B3F96', '#2F7D46', '#B03A5B', '#5B6B78']; // 일반계 학교별 색
+const ACC_T = ['#0E4D64', '#7A4A12', '#6B3F8C'];                                             // 특성화 학교별 틀 색
+function schoolCard(s, title, acc) {
   const ratio = s.cap ? s.applicants / s.cap : 0;
   const tags = [genderTag(s)];
   if (s.total && Number(s.total) !== Number(s.cap)) tags.push(h('span', {class: 'tag', text: '전체 모집 ' + s.total + '명 (특별전형 포함)'}));
@@ -431,7 +443,7 @@ function schoolCard(s, title) {
         h('span', {class: 'cutlabel', text: '컷라인'}),
         h('span', {class: 'cut' + (s.cutline == null ? ' none' : ''), text: s.cutline == null ? '지원자 없음' : fmt(s.cutline)}),
         s.tie > 1 ? h('span', {class: 'tie', text: '동점 ' + s.tie + '명'}) : '');
-  const card = h('div', {class: 'card'});
+  const card = h('div', {class: 'card' + (acc ? ' acc' : ''), style: acc ? '--acc:' + acc : null});
   const spEl = spBox(s) || null;
   const canOpen = !s.hidden && s.scores && s.scores.length;
   let det = null;
@@ -485,13 +497,18 @@ function renderDash() {
         if (!groups.has(school)) groups.set(school, []);
         groups.get(school).push({s, dept});
       });
+      let gi = 0;
       groups.forEach((arr, school) => {
-        sec.append(h('div', {class: 'sub', text: school}));
-        const sorted = sortList(arr.map(x => x.s), mode);
-        sorted.forEach(s => sec.append(schoolCard(s, arr.find(x => x.s === s).dept)));
+        const acc = ACC_T[gi++ % ACC_T.length];
+        const frame = h('div', {class: 'grp', style: '--acc:' + acc},
+          h('div', {class: 'grp-h'}, h('b', {text: school}), h('span', {text: '학과 ' + arr.length + '개'})));
+        const body = h('div', {class: 'grp-b'});
+        sortList(arr.map(x => x.s), mode).forEach(s => body.append(schoolCard(s, arr.find(x => x.s === s).dept)));
+        frame.append(body); sec.append(frame);
       });
     } else {
-      sortList(z.list, mode).forEach(s => sec.append(schoolCard(s)));
+      const idx = new Map(z.list.map((s, i) => [s.name, i]));
+      sortList(z.list, mode).forEach(s => sec.append(schoolCard(s, null, ACC_G[idx.get(s.name) % ACC_G.length])));
     }
     cols.append(sec);
   });
