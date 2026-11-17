@@ -96,6 +96,7 @@ button.act:hover{background:#0A3A4C}
 .li .d{font-size:13px;margin-top:4px;color:var(--muted);font-variant-numeric:tabular-nums}
 .d.pos{color:var(--safe)} .d.neg{color:var(--risk)}
 
+.sp{margin-top:8px;font-size:13px;color:var(--muted,#5b6b73);line-height:1.45}
 .more{display:flex;align-items:center;gap:4px;margin-top:10px;background:none;border:0;padding:4px 0;color:var(--brand);font-weight:600;font-size:14px;cursor:pointer}
 .more:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
 .more i{display:inline-block;transition:transform .15s;font-style:normal}
@@ -375,7 +376,12 @@ function schoolCard(s, title) {
       h('span', {}, '지원율 ', h('b', {text: Math.round(ratio * 100) + '%'}))),
     h('div', {class: 'bar', 'aria-hidden': 'true'},
       h('span', {class: ratio > 1 ? 'over' : '', style: 'width:' + Math.min(ratio / 1.5, 1) * 100 + '%'}), h('em')),
-    tags.filter(Boolean).length ? h('div', {class: 'tags'}, tags.filter(Boolean)) : '', btn || '');
+    tags.filter(Boolean).length ? h('div', {class: 'tags'}, tags.filter(Boolean)) : '',
+    (s.special && !/^(없음|-)$/.test(s.special.trim()) || s.spTotal) ? h('div', {class: 'sp'},
+      (s.special && !/^(없음|-)$/.test(s.special.trim()) ? '특별전형 모집: ' + s.special : '') +
+      (s.spTotal ? ' · 희망 ' + s.spTotal + '명 (' + Object.keys(s.sp).map(k => k + ' ' + s.sp[k]).join(' · ') + ')' : '') +
+      ' · 컷라인·지원율에는 일반전형만 반영') : '',
+    btn || '');
   if (btn && OPEN.has(s.name)) toggle();
   return card;
 }
