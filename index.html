@@ -291,14 +291,14 @@ function detailBox(s, opt) {
   opt = opt || {};
   const box = h('div', {class: 'detail'});
   const pr = DATA.progress || {};
-  if (pr.total && pr.done < pr.total) {
+  if (!opt.special && pr.total && pr.done < pr.total) {
     box.append(h('div', {class: 'warn', text: '입력 ' + pr.done + '/' + pr.total + '학급 기준입니다. 아직 입력되지 않은 반이 있어 실제와 다를 수 있습니다.'}));
   }
   const desc = s.scores.slice().sort((a, b) => b - a);
   const n = desc.length;
   const avg = desc.reduce((a, b) => a + b, 0) / n;
   const kp = (l, v) => h('div', {class: 'kpi'}, h('span', {text: l}), h('b', {text: fmt(v)}));
-  box.append(h('h4', {text: (opt.special ? '희망자 ' : '지원자 ') + n + '명의 점수'}),
+  box.append(h('h4', {text: (opt.special ? '희망자 ' : '일반전형 지원자 ') + n + '명의 점수'}),
     h('div', {class: 'kpis'}, kp('최고', desc[0]), kp('상위 25%', quant(desc, .25)), kp('중앙값', quant(desc, .5)), kp('하위 25%', quant(desc, .75)), kp('평균', avg)));
 
   // 히스토그램 (10점 단위)
@@ -404,7 +404,7 @@ function spBox(s) {
       if (open && !slot.firstChild) {
         slot.append(sc && sc.length
           ? detailBox({scores: sc, cap: x.cap, cutline: null, status: ''}, {special: true})
-          : h('div', {class: 'hide-note', text: '희망자가 적어(' + (DATA.spMin || 3) + '명 미만) 점수는 공개하지 않습니다.'}));
+          : h('div', {class: 'hide-note', text: '이 전형의 점수 데이터가 아직 없습니다. 병합 후 다시 게시해 주세요.'}));
       }
       slot.hidden = !open; row.setAttribute('aria-expanded', open); row.classList.toggle('on', open);
       open ? SPOPEN.add(key) : SPOPEN.delete(key);
@@ -432,16 +432,17 @@ function schoolCard(s, title) {
         h('span', {class: 'cut' + (s.cutline == null ? ' none' : ''), text: s.cutline == null ? '지원자 없음' : fmt(s.cutline)}),
         s.tie > 1 ? h('span', {class: 'tie', text: '동점 ' + s.tie + '명'}) : '');
   const card = h('div', {class: 'card'});
+  const spEl = spBox(s) || null;
   const canOpen = !s.hidden && s.scores && s.scores.length;
   let det = null;
   const toggle = () => {
     const open = card.classList.toggle('open-d');
-    if (open && !det) { det = detailBox(s); card.append(det); }
+    if (open && !det) { det = detailBox(s); card.insertBefore(det, spEl || null); }
     if (det) det.hidden = !open;
-    btn.setAttribute('aria-expanded', open); btn.firstChild.textContent = open ? '접기 ' : '지원 현황·점수 분포 ';
+    btn.setAttribute('aria-expanded', open); btn.firstChild.textContent = open ? '일반전형 접기 ' : '일반전형 지원 현황·점수 분포 ';
     open ? OPEN.add(s.name) : OPEN.delete(s.name);
   };
-  const btn = canOpen ? h('button', {class: 'more', type: 'button', 'aria-expanded': 'false'}, h('span', {text: '지원 현황·점수 분포 '}), h('i', {text: '▾'})) : null;
+  const btn = canOpen ? h('button', {class: 'more', type: 'button', 'aria-expanded': 'false'}, h('span', {text: '일반전형 지원 현황·점수 분포 '}), h('i', {text: '▾'})) : null;
   if (btn) btn.addEventListener('click', toggle);
   card.append(
     h('div', {class: 'card-top'}, h('div', {class: 'name', text: title || s.name}), statusChip(s)),
@@ -453,8 +454,7 @@ function schoolCard(s, title) {
     h('div', {class: 'bar', 'aria-hidden': 'true'},
       h('span', {class: ratio > 1 ? 'over' : '', style: 'width:' + Math.min(ratio / 1.5, 1) * 100 + '%'}), h('em')),
     tags.filter(Boolean).length ? h('div', {class: 'tags'}, tags.filter(Boolean)) : '',
-    spBox(s),
-    btn || '');
+    btn || '', spEl || '');
   if (btn && OPEN.has(s.name)) toggle();
   return card;
 }
