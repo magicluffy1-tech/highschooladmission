@@ -104,6 +104,12 @@ button.act:hover{background:#0A3A4C}
 .spbar{grid-column:1/3;height:6px;background:#E6EAEE;border-radius:3px;overflow:hidden}
 .spbar i{display:block;height:100%;background:var(--brand);border-radius:3px}
 .spbar i.over{background:var(--risk)}
+.sprow.clk{cursor:pointer;border-radius:6px}
+.sprow.clk:hover{background:#F2F5F7}
+.sprow.on .caret{display:inline-block;transform:rotate(180deg)}
+.caret{color:var(--brand);font-size:12px}
+.spdetail{margin:2px 0 10px;padding:10px 12px;background:#F7F9FA;border:1px solid var(--line);border-radius:8px}
+.spdetail .detail{margin:0;padding:0;border:0}
 .spnote{font-size:12px;color:var(--muted);margin-top:4px}
 .alt{margin-top:6px;font-size:12.5px;line-height:1.5;background:var(--open-bg);color:var(--open);border-radius:6px;padding:4px 8px}
 .alt b{font-weight:700}
@@ -281,7 +287,8 @@ function quant(desc, q) { // desc: 내림차순. 상위 q(0~1) 지점 점수
   const i = Math.min(desc.length - 1, Math.max(0, Math.ceil(desc.length * q) - 1));
   return desc[i];
 }
-function detailBox(s) {
+function detailBox(s, opt) {
+  opt = opt || {};
   const box = h('div', {class: 'detail'});
   const pr = DATA.progress || {};
   if (pr.total && pr.done < pr.total) {
@@ -291,7 +298,7 @@ function detailBox(s) {
   const n = desc.length;
   const avg = desc.reduce((a, b) => a + b, 0) / n;
   const kp = (l, v) => h('div', {class: 'kpi'}, h('span', {text: l}), h('b', {text: fmt(v)}));
-  box.append(h('h4', {text: '지원자 ' + n + '명의 점수'}),
+  box.append(h('h4', {text: (opt.special ? '희망자 ' : '지원자 ') + n + '명의 점수'}),
     h('div', {class: 'kpis'}, kp('최고', desc[0]), kp('상위 25%', quant(desc, .25)), kp('중앙값', quant(desc, .5)), kp('하위 25%', quant(desc, .75)), kp('평균', avg)));
 
   // 히스토그램 (10점 단위)
@@ -300,11 +307,11 @@ function detailBox(s) {
   for (let b = lo; b <= hi; b += W) bins.push({b, c: 0});
   desc.forEach(v => bins[Math.floor((v - lo) / W)].c++);
   const mx = Math.max(...bins.map(x => x.c));
-  const cut = s.cutline;
+  const cut = opt.special ? null : s.cutline;
   const hist = h('div', {class: 'hist', role: 'img', 'aria-label': '점수대별 지원자 수'});
   const xs = h('div', {class: 'hx', 'aria-hidden': 'true'});
   const els = bins.map(x => {
-    const inside = cut != null && x.b + W > cut; // 컷라인 이상이 들어 있는 구간
+    const inside = opt.special || (cut != null && x.b + W > cut); // 컷라인 이상이 들어 있는 구간
     const e = h('button', {type: 'button', class: 'hb' + (inside ? ' in' : ''), 'aria-label': x.b + '~' + (x.b + W - 0.5) + '점 ' + x.c + '명'},
       h('s', {text: x.c || ''}), h('u', {style: 'height:' + (x.c ? Math.max(4, x.c / mx * 64) : 0) + 'px'}));
     if (!x.c) e.disabled = true;
@@ -321,7 +328,7 @@ function detailBox(s) {
     selEl = e; e.classList.add('sel');
     const list = desc.filter(v => v >= x.b && v < x.b + W);
     pickBox.textContent = '';
-    pickBox.append(h('div', {class: 'ph'}, x.b + '~' + (x.b + W - 0.5) + '점 구간 ', h('span', {text: list.length + '명 · 등수는 전체 지원자 기준'})));
+    pickBox.append(h('div', {class: 'ph'}, x.b + '~' + (x.b + W - 0.5) + '점 구간 ', h('span', {text: list.length + '명 · 등수는 전체 ' + (opt.special ? '희망자' : '지원자') + ' 기준'})));
     const sc = h('div', {class: 'sc'});
     list.forEach(v => {
       const rank = desc.filter(y => y > v).length + 1;
@@ -330,7 +337,7 @@ function detailBox(s) {
     pickBox.append(sc); pickBox.hidden = false;
   }
   box.append(h('h4', {text: '점수대별 분포 (막대를 누르면 그 구간의 점수가 나옵니다)'}), hist, xs, pickBox,
-    h('div', {class: 'hl'}, h('i', {style: 'background:var(--brand)'}), s.status === '미달' ? '지원자 전체가 정원 안' : '컷라인 이상 구간',
+    opt.special ? '' : h('div', {class: 'hl'}, h('i', {style: 'background:var(--brand)'}), s.status === '미달' ? '지원자 전체가 정원 안' : '컷라인 이상 구간',
       '  ', h('i', {style: 'background:#C9D6DD;margin-left:8px'}), '컷라인 미만 구간'));
 
   // 내 점수
@@ -343,14 +350,16 @@ function detailBox(s) {
     if (!t) return;
     const v = Number(t);
     if (!isFinite(v) || v < DATA.min || v > DATA.max) { out.textContent = DATA.min + '~' + DATA.max + ' 사이 숫자를 입력하세요.'; return; }
-    const j = judge(s, v);
+    const j = opt.special
+      ? (() => { const rk = desc.filter(y => y > v).length + 1; return {rank: rk, label: rk <= s.cap ? '모집 인원 안' : '모집 인원 밖', cls: rk <= s.cap ? 'safe' : 'hard'}; })()
+      : judge(s, v);
     const bi = Math.floor((v - lo) / W);
     if (bi >= 0 && bi < els.length) els[bi].classList.add('me');
-    out.append(j.rank ? h('span', {}, '현재 ', h('b', {text: j.rank + '등'}), ' / 정원 ' + fmt(s.cap) + ' · ') : '', h('span', {class: 'chip ' + j.cls, text: j.label}));
+    out.append(j.rank ? h('span', {}, (opt.special ? '희망자 중 ' : '현재 '), h('b', {text: j.rank + '등'}), (opt.special ? ' / 모집 ' : ' / 정원 ') + fmt(s.cap) + ' · ') : '', h('span', {class: 'chip ' + j.cls, text: j.label}));
   };
   inp.addEventListener('input', run);
   box.append(h('h4', {text: '이 학생 점수는 어디쯤?'}), h('div', {class: 'mine'}, inp, out),
-    h('p', {class: 'hint', text: '입력한 점수는 저장되지 않습니다. 1지망 현황이며 이후 변동될 수 있습니다.'}));
+    h('p', {class: 'hint', text: '입력한 점수는 저장되지 않습니다. 1지망 현황이며 이후 변동될 수 있습니다.' + (opt.special ? ' 특별전형은 서류·면접 등으로 선발될 수 있어 점수는 참고용입니다.' : '')}));
   return box;
 }
 
@@ -374,19 +383,40 @@ function spState(x) {
   if (x.cnt === x.cap) return {label: '정원 충족', cls: 'edge'};
   return {label: '여유 ' + (x.cap - x.cnt), cls: 'safe'};
 }
+const SPOPEN = new Set();
 function spBox(s) {
   const list = spList(s);
   if (!list.length) return '';
-  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형 현황 (일반전형과 별도 모집)'}));
+  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형 현황 (일반전형과 별도 모집) · 전형을 누르면 점수 분포'}));
   list.forEach(x => {
     const st = spState(x);
     const w = x.cap ? Math.min(x.cnt / x.cap, 1) * 100 : (x.cnt ? 100 : 0);
-    box.append(h('div', {class: 'sprow'},
-      h('div', {}, h('span', {class: 'sn', text: x.name}), ' ', h('span', {class: 'sc', text: (x.cap ? '모집 ' + x.cap + '명 · ' : '') + '희망 ' + x.cnt + '명'})),
+    const sc = (s.spScores || {})[x.name];
+    const can = x.cnt > 0;
+    const key = s.name + '|' + x.name;
+    const row = h('div', {class: 'sprow' + (can ? ' clk' : ''), role: can ? 'button' : null, tabindex: can ? '0' : null, 'aria-expanded': 'false'},
+      h('div', {}, h('span', {class: 'sn', text: x.name}), can ? h('span', {class: 'caret', text: ' ▾'}) : '', ' ', h('span', {class: 'sc', text: (x.cap ? '모집 ' + x.cap + '명 · ' : '') + '희망 ' + x.cnt + '명'})),
       h('span', {class: 'chip ' + st.cls, text: st.label}),
-      h('div', {class: 'spbar', 'aria-hidden': 'true'}, h('i', {class: x.cnt > x.cap && x.cap ? 'over' : '', style: 'width:' + w + '%'}))));
+      h('div', {class: 'spbar', 'aria-hidden': 'true'}, h('i', {class: x.cnt > x.cap && x.cap ? 'over' : '', style: 'width:' + w + '%'})));
+    const slot = h('div', {class: 'spdetail', hidden: ''}); slot.hidden = true;
+    const toggle = () => {
+      const open = slot.hidden;
+      if (open && !slot.firstChild) {
+        slot.append(sc && sc.length
+          ? detailBox({scores: sc, cap: x.cap, cutline: null, status: ''}, {special: true})
+          : h('div', {class: 'hide-note', text: '희망자가 적어(' + (DATA.spMin || 3) + '명 미만) 점수는 공개하지 않습니다.'}));
+      }
+      slot.hidden = !open; row.setAttribute('aria-expanded', open); row.classList.toggle('on', open);
+      open ? SPOPEN.add(key) : SPOPEN.delete(key);
+    };
+    if (can) {
+      row.addEventListener('click', toggle);
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    }
+    box.append(row, slot);
+    if (can && SPOPEN.has(key)) toggle();
   });
-  box.append(h('div', {class: 'spnote', text: '희망 인원은 1지망 기준입니다. 점수는 공개하지 않으며, 선발 방법(서류·면접 등)은 모집요강을 확인하세요.'}));
+  box.append(h('div', {class: 'spnote', text: '희망 인원은 1지망 기준입니다. 선발 방법(서류·면접 등)은 모집요강을 확인하세요.'}));
   return box;
 }
 
