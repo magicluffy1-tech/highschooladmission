@@ -400,7 +400,7 @@ const SPOPEN = new Set();
 function spBox(s) {
   const list = spList(s);
   if (!list.length) return '';
-  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형 현황 · 누르면 점수 분포'}));
+  const box = h('div', {class: 'spbox'}, h('h4', {text: '특별전형·정원외 현황 · 누르면 점수 분포'}));
   list.forEach(x => {
     const st = spState(x);
     const w = x.cap ? Math.min(x.cnt / x.cap, 1) * 100 : (x.cnt ? 100 : 0);
@@ -566,7 +566,7 @@ $('go').addEventListener('click', () => {
           ? '지원 ' + fmt(s.applicants) + '명 / 정원 ' + fmt(s.cap)
           : '예상 ' + j.rank + '등 / 정원 ' + fmt(s.cap) + ' · 컷라인 ' + fmt(s.cutline);
         const g = genderTag(s);
-        const alt = (j.cls === 'risk' || j.cls === 'hard') ? spList(s) : [];
+        const alt = (j.cls === 'risk' || j.cls === 'hard') ? spList(s).filter(o => o.name.indexOf('정원외') !== 0) : [];
         const altBox = alt.length ? h('div', {class: 'alt'}, h('b', {text: '특별전형 대안 '}),
           alt.map(x => x.name + (x.cap ? ' 모집 ' + x.cap + ' / 희망 ' + x.cnt + ' (' + spState(x).label + ')' : ' 희망 ' + x.cnt + '명')).join(' · ')) : '';
         res.append(h('div', {class: 'li' + (s.name === pick ? ' pick' : '')},
