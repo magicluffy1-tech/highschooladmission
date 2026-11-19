@@ -153,6 +153,7 @@ button.act:hover{background:#0A3A4C}
 .sc{display:flex;flex-wrap:wrap;gap:6px}
 .sc span{background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-variant-numeric:tabular-nums}
 .sc span b{font-size:15px}
+.sc span em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--brand);margin-right:6px}
 .sc span i{font-style:normal;font-size:12px;color:var(--muted);margin-left:4px}
 .sc span.cutm{border-color:var(--brand);background:#E7F1F5}
 .hl{font-size:12.5px;color:var(--muted);margin-top:8px}
@@ -304,7 +305,9 @@ function detailBox(s, opt) {
   if (!opt.special && pr.total && pr.done < pr.total) {
     box.append(h('div', {class: 'warn', text: '입력 ' + pr.done + '/' + pr.total + '학급 기준입니다. 아직 입력되지 않은 반이 있어 실제와 다를 수 있습니다.'}));
   }
-  const desc = s.scores.slice().sort((a, b) => b - a);
+  const srcArr = s.srcs || [];
+  const items = s.scores.map((v, i) => ({v: v, src: srcArr[i] || ''})).sort((a, b) => b.v - a.v);
+  const desc = items.map(x => x.v);
   const n = desc.length;
   const avg = desc.reduce((a, b) => a + b, 0) / n;
   const kp = (l, v) => h('div', {class: 'kpi'}, h('span', {text: l}), h('b', {text: fmt(v)}));
@@ -336,13 +339,13 @@ function detailBox(s, opt) {
     if (selEl === e) { e.classList.remove('sel'); selEl = null; pickBox.hidden = true; return; }
     if (selEl) selEl.classList.remove('sel');
     selEl = e; e.classList.add('sel');
-    const list = desc.filter(v => v >= x.b && v < x.b + W);
+    const list = items.filter(it => it.v >= x.b && it.v < x.b + W);
     pickBox.textContent = '';
     pickBox.append(h('div', {class: 'ph'}, x.b + '~' + (x.b + W - 0.5) + '점 구간 ', h('span', {text: list.length + '명 · 등수는 전체 ' + (opt.special ? '희망자' : '지원자') + ' 기준'})));
     const sc = h('div', {class: 'sc'});
-    list.forEach(v => {
-      const rank = desc.filter(y => y > v).length + 1;
-      sc.append(h('span', {class: cut != null && v === cut ? 'cutm' : ''}, h('b', {text: fmt(v)}), h('i', {text: rank + '등' + (cut != null && v === cut ? ' · 컷라인' : '')})));
+    list.forEach(it => {
+      const v = it.v, rank = desc.filter(y => y > v).length + 1;
+      sc.append(h('span', {class: 'pi' + (cut != null && v === cut ? ' cutm' : '')}, it.src ? h('em', {text: it.src}) : '', h('b', {text: fmt(v)}), h('i', {text: rank + '등' + (cut != null && v === cut ? ' · 컷라인' : '')})));
     });
     pickBox.append(sc); pickBox.hidden = false;
   }
@@ -413,7 +416,7 @@ function spBox(s) {
       const open = slot.hidden;
       if (open && !slot.firstChild) {
         slot.append(sc && sc.length
-          ? detailBox({scores: sc, cap: x.cap, cutline: null, status: ''}, {special: true})
+          ? detailBox({scores: sc, srcs: (s.spSrcs || {})[x.name], cap: x.cap, cutline: null, status: ''}, {special: true})
           : h('div', {class: 'hide-note', text: '이 전형의 점수 데이터가 아직 없습니다. 병합 후 다시 게시해 주세요.'}));
       }
       slot.hidden = !open; row.setAttribute('aria-expanded', open); row.classList.toggle('on', open);
