@@ -165,6 +165,10 @@ button.act:hover{background:#0A3A4C}
 @media (max-width:420px){.kpis{grid-template-columns:repeat(3,1fr)}}
 .foot{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
 @media (min-width:600px){.wrap{padding-top:28px}h1{font-size:28px}}
+.madeby{width:max-content;margin:28px auto 0;display:flex;align-items:center;gap:7px;padding:4px 12px 4px 5px;border-radius:999px;background:rgba(255,255,255,.94);color:#333;font:500 13px 'Noto Sans KR',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.35);user-select:none}
+.madeby i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#2e8b57;color:#fff;font:700 13px 'Noto Serif KR',serif;font-style:normal}
+.madeby b{font-weight:700}
+@media print{.madeby{display:none}}
 </style>
 </head>
 <body>
@@ -212,6 +216,7 @@ button.act:hover{background:#0A3A4C}
   </section>
 
   <p class="foot" id="foot"></p>
+  <div class="madeby" aria-label="Made by Cho"><i>C</i><span>Made by <b>Cho</b></span></div>
 </div>
 
 <script>
